@@ -26,7 +26,6 @@ def create_booking(
     *,
     db: Session = Depends(deps.get_db),
     booking_in: schemas.BookingCreate,
-    current_user: models.User = Depends(deps.get_current_user), # Can be optional for public, but usually requires auth or guest details
 ) -> Any:
     """
     Create a new booking.
@@ -35,7 +34,7 @@ def create_booking(
     
     db_obj = models.Booking(
         id=booking_id,
-        customer_id=current_user.id if current_user else None,
+        customer_id=None,
         guest_name=booking_in.guest_name,
         guest_phone=booking_in.guest_phone,
         guest_email=booking_in.guest_email,
@@ -51,15 +50,15 @@ def create_booking(
     db.refresh(db_obj)
     return db_obj
 
-@router.get("/me", response_model=List[schemas.Booking])
+@router.get("/user/{customer_id}", response_model=List[schemas.Booking])
 def read_my_bookings(
+    customer_id: str,
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Fetch upcoming and past bookings for the logged-in user.
+    Fetch upcoming and past bookings for a specific user (auth temporarily disabled).
     """
-    bookings = db.query(models.Booking).filter(models.Booking.customer_id == current_user.id).all()
+    bookings = db.query(models.Booking).filter(models.Booking.customer_id == customer_id).all()
     return bookings
 
 @router.put("/{id}/cancel", response_model=schemas.Booking)
@@ -67,7 +66,6 @@ def cancel_booking(
     *,
     db: Session = Depends(deps.get_db),
     id: str,
-    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Cancel an upcoming booking.
@@ -75,8 +73,6 @@ def cancel_booking(
     booking = crud.booking.get(db=db, id=id)
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
-    if booking.customer_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not enough permissions")
     
     booking.status = models.booking.BookingStatus.cancelled
     db.commit()

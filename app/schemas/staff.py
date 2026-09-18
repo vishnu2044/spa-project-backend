@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from uuid import UUID
 from app.models.staff import DayOfWeek
@@ -30,10 +30,10 @@ class StaffWorkingDay(StaffWorkingDayBase):
         from_attributes = True
 
 class StaffBase(BaseModel):
-    name: str
-    role: str
-    experience_years: Optional[int] = 0
-    bio: Optional[str] = None
+    name: str = Field(min_length=2, max_length=50)
+    role: str = Field(min_length=2, max_length=50)
+    experience_years: Optional[int] = Field(0, ge=0)
+    bio: Optional[str] = Field(None, max_length=1000)
     image_url: Optional[str] = None
     working_hours: Optional[str] = None
     is_active: Optional[bool] = True
@@ -42,10 +42,10 @@ class StaffCreate(StaffBase):
     pass
 
 class StaffUpdate(BaseModel):
-    name: Optional[str] = None
-    role: Optional[str] = None
-    experience_years: Optional[int] = None
-    bio: Optional[str] = None
+    name: Optional[str] = Field(None, min_length=2, max_length=50)
+    role: Optional[str] = Field(None, min_length=2, max_length=50)
+    experience_years: Optional[int] = Field(None, ge=0)
+    bio: Optional[str] = Field(None, max_length=1000)
     image_url: Optional[str] = None
     working_hours: Optional[str] = None
     is_active: Optional[bool] = None

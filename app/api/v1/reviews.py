@@ -24,13 +24,13 @@ def create_review(
     *,
     db: Session = Depends(deps.get_db),
     review_in: schemas.ReviewCreate,
-    current_user: models.User = Depends(deps.get_current_active_user),
+    customer_id: str,
 ) -> Any:
     """
-    Submit a new review.
+    Submit a new review (auth temporarily disabled).
     """
     review = crud.review.create(db, obj_in=review_in)
-    review.customer_id = current_user.id
+    review.customer_id = customer_id
     db.commit()
     db.refresh(review)
     return review

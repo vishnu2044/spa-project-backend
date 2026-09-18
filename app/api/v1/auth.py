@@ -44,5 +44,11 @@ def register(
             status_code=400,
             detail="The user with this username already exists in the system.",
         )
-    user = crud.user.create(db, obj_in=user_in)
+    try:
+        user = crud.user.create(db, obj_in=user_in)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=str(e),
+        )
     return user

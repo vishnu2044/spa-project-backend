@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from app.core.database import Base
 import enum
@@ -21,5 +21,6 @@ class User(Base):
     points = Column(Integer, default=0)
     join_date = Column(DateTime, default=datetime.utcnow)
     membership_plan_id = Column(UUID(as_uuid=True), nullable=True) # Optional FK
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

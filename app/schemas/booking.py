@@ -1,19 +1,19 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from uuid import UUID
 from datetime import date, time, datetime
 from app.models.booking import BookingStatus
 
 class BookingBase(BaseModel):
-    guest_name: Optional[str] = None
-    guest_phone: Optional[str] = None
+    guest_name: Optional[str] = Field(None, min_length=2, max_length=50)
+    guest_phone: Optional[str] = Field(None, min_length=10, max_length=15)
     guest_email: Optional[EmailStr] = None
     service_id: UUID
     staff_id: Optional[UUID] = None
     booking_date: date
     booking_time: time
-    total_amount: float
-    special_notes: Optional[str] = None
+    total_amount: float = Field(ge=0)
+    special_notes: Optional[str] = Field(None, max_length=500)
 
 class BookingCreate(BookingBase):
     pass

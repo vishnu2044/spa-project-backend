@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
 
@@ -6,8 +6,8 @@ class GalleryItemBase(BaseModel):
     category_id: Optional[UUID] = None
     image_url: str
     thumbnail_url: Optional[str] = None
-    alt_text: Optional[str] = None
-    caption: Optional[str] = None
+    alt_text: Optional[str] = Field(None, max_length=100)
+    caption: Optional[str] = Field(None, max_length=500)
     is_before_after: Optional[bool] = False
     before_image_url: Optional[str] = None
 
@@ -18,8 +18,8 @@ class GalleryItemUpdate(BaseModel):
     category_id: Optional[UUID] = None
     image_url: Optional[str] = None
     thumbnail_url: Optional[str] = None
-    alt_text: Optional[str] = None
-    caption: Optional[str] = None
+    alt_text: Optional[str] = Field(None, max_length=100)
+    caption: Optional[str] = Field(None, max_length=500)
     is_before_after: Optional[bool] = None
     before_image_url: Optional[str] = None
 
