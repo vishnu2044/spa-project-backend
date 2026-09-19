@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy import Column, String, Numeric, DateTime, Date, Time, ForeignKey, Enum, Text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 import enum
 from datetime import datetime
@@ -32,3 +33,7 @@ class Booking(Base):
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    customer = relationship("User")
+    service = relationship("Service")
+    staff = relationship("Staff")

@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Enum, Text, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 import enum
 from datetime import datetime
@@ -22,3 +23,5 @@ class Review(Base):
     is_verified = Column(Boolean, default=False)
     status = Column(Enum(ReviewStatus), default=ReviewStatus.published)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    customer = relationship("User")

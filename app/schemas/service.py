@@ -42,6 +42,7 @@ class ServiceUpdate(BaseModel):
 
 class Service(ServiceBase):
     id: UUID
+    category: Optional[Category] = None
 
     class Config:
         from_attributes = True

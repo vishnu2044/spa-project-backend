@@ -16,10 +16,28 @@ def get_availability(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Fetch available time slots.
+    Fetch available time slots or booked slots.
     """
-    # Logic to fetch availability based on bookings
-    return {"message": "Not implemented yet"}
+    query = db.query(models.Booking).filter(
+        models.Booking.booking_date == date,
+        models.Booking.status != models.booking.BookingStatus.cancelled
+    )
+    
+    if staff_id:
+        query = query.filter(models.Booking.staff_id == staff_id)
+        
+    bookings = query.all()
+    
+    booked_slots = []
+    for b in bookings:
+        duration = b.service.duration_minutes if b.service else 60
+        booked_slots.append({
+            "time": b.booking_time.strftime("%H:%M:%S"),
+            "duration_minutes": duration,
+            "staff_id": str(b.staff_id) if b.staff_id else None
+        })
+        
+    return {"booked_slots": booked_slots}
 
 @router.post("", response_model=schemas.Booking)
 def create_booking(

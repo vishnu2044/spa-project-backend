@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Enum, Boolean
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 import enum
 from datetime import datetime
@@ -8,6 +9,7 @@ from datetime import datetime
 class UserRole(str, enum.Enum):
     customer = "customer"
     admin = "admin"
+    staff = "staff"
 
 class User(Base):
     __tablename__ = "users"
@@ -24,3 +26,9 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    staff_profile = relationship("Staff", back_populates="user", uselist=False)
+
+    @property
+    def staff_id(self):
+        return self.staff_profile.id if self.staff_profile else None

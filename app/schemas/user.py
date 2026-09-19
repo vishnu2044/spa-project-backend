@@ -35,4 +35,4 @@ class UserInDBBase(UserBase):
 
 # Additional properties to return via API
 class User(UserInDBBase):
-    pass
+    staff_id: Optional[UUID] = None

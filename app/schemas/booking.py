@@ -3,6 +3,8 @@ from typing import Optional
 from uuid import UUID
 from datetime import date, time, datetime
 from app.models.booking import BookingStatus
+from app.schemas.service import Service
+from app.schemas.staff import Staff
 
 class BookingBase(BaseModel):
     guest_name: Optional[str] = Field(None, min_length=2, max_length=50)
@@ -12,7 +14,7 @@ class BookingBase(BaseModel):
     staff_id: Optional[UUID] = None
     booking_date: date
     booking_time: time
-    total_amount: float = Field(ge=0)
+    total_amount: Optional[float] = Field(0.0, ge=0)
     special_notes: Optional[str] = Field(None, max_length=500)
 
 class BookingCreate(BookingBase):
@@ -27,6 +29,8 @@ class Booking(BookingBase):
     status: BookingStatus
     created_at: datetime
     updated_at: datetime
+    service: Optional[Service] = None
+    staff: Optional[Staff] = None
 
     class Config:
         from_attributes = True

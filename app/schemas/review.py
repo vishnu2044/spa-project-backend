@@ -4,6 +4,13 @@ from uuid import UUID
 from datetime import datetime
 from app.models.review import ReviewStatus
 
+class ReviewCustomer(BaseModel):
+    id: UUID
+    name: str
+
+    class Config:
+        from_attributes = True
+
 class ReviewBase(BaseModel):
     booking_id: Optional[str] = None
     service_id: UUID
@@ -22,6 +29,7 @@ class Review(ReviewBase):
     is_verified: bool
     status: ReviewStatus
     created_at: datetime
+    customer: Optional[ReviewCustomer] = None
 
     class Config:
         from_attributes = True

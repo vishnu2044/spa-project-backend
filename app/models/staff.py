@@ -27,9 +27,11 @@ class Staff(Base):
     is_active = Column(Boolean, default=True)
     rating_cache = Column(Float, default=0.0)
     review_count_cache = Column(Integer, default=0)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True, unique=True)
 
     specialties = relationship("StaffSpecialty", back_populates="staff")
     working_days = relationship("StaffWorkingDay", back_populates="staff")
+    user = relationship("User", back_populates="staff_profile")
 
 
 class StaffSpecialty(Base):
